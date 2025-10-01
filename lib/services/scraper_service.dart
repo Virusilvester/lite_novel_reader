@@ -21,6 +21,7 @@ class ScraperService {
     }
   }
 
+
   Future<Novel?> scrapeNovel(String url, ScraperExtension ext) async {
     try {
       final htmlString = await _fetchUrl(url, proxy: ext.proxyUrl);
