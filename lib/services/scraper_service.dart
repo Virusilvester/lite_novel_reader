@@ -4,12 +4,30 @@ import 'package:http/http.dart' as http;
 import '../models/models.dart';
 
 class ScraperService {
-  Future<Novel?> scrapeNovel(String url, ScraperExtension ext) async {
+  /// Optional: fetches via a proxy to avoid CORS issues (Flutter Web)
+  Future<String?> _fetchUrl(String url, {String? proxy}) async {
     try {
-      final uri = Uri.parse(url);
+      Uri uri = Uri.parse(url);
+      if (proxy != null && proxy.isNotEmpty) {
+        // Pass the target URL as a query param to your proxy
+        uri = Uri.parse('$proxy?url=${Uri.encodeComponent(url)}');
+      }
       final resp = await http.get(uri);
       if (resp.statusCode != 200) return null;
-      final doc = html_parser.parse(resp.body);
+      return resp.body;
+    } catch (e) {
+      debugPrint('Fetch error: $e');
+      return null;
+    }
+  }
+
+  Future<Novel?> scrapeNovel(String url, ScraperExtension ext) async {
+    try {
+      final htmlString = await _fetchUrl(url, proxy: ext.proxyUrl);
+      if (htmlString == null) return null;
+
+      final uri = Uri.parse(url);
+      final doc = html_parser.parse(htmlString);
 
       final titleEl = doc.querySelector(ext.titleSelector);
       final title = titleEl?.text.trim() ?? 'Unknown title';
@@ -55,11 +73,11 @@ class ScraperService {
 
   Future<String?> fetchChapterContent(String chapterUrl, ScraperExtension ext) async {
     try {
-      final resp = await http.get(Uri.parse(chapterUrl));
-      if (resp.statusCode != 200) return null;
-      final doc = html_parser.parse(resp.body);
+      final htmlString = await _fetchUrl(chapterUrl, proxy: ext.proxyUrl);
+      if (htmlString == null) return null;
+      final doc = html_parser.parse(htmlString);
       final contentEl = doc.querySelector(ext.contentSelector);
-      return contentEl?.innerHtml ?? resp.body;
+      return contentEl?.innerHtml ?? htmlString;
     } catch (e) {
       debugPrint('fetchChapterContent error: $e');
       return null;

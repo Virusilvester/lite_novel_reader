@@ -73,6 +73,9 @@ class ScraperExtension {
   String chapterTitleSelector;
   String contentSelector;
 
+  /// Optional server-side proxy URL to fetch the page
+  String? proxyUrl;
+
   ScraperExtension({
     required this.id,
     required this.name,
@@ -82,6 +85,7 @@ class ScraperExtension {
     required this.chapterListSelector,
     required this.chapterTitleSelector,
     required this.contentSelector,
+    this.proxyUrl,
   });
 
   Map<String, dynamic> toJson() => {
@@ -93,6 +97,7 @@ class ScraperExtension {
         'chapterListSelector': chapterListSelector,
         'chapterTitleSelector': chapterTitleSelector,
         'contentSelector': contentSelector,
+        'proxyUrl': proxyUrl,
       };
 
   static ScraperExtension fromJson(Map<String, dynamic> j) => ScraperExtension(
@@ -104,5 +109,6 @@ class ScraperExtension {
         chapterListSelector: j['chapterListSelector'],
         chapterTitleSelector: j['chapterTitleSelector'],
         contentSelector: j['contentSelector'],
+        proxyUrl: j['proxyUrl'],
       );
 }
