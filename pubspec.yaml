@@ -1,0 +1,24 @@
+name: lite_novel_reader
+description: A lightweight Flutter webnovel reader (step1 scaffold).
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=2.18.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.0.5
+  http: ^0.13.6
+  html: ^0.15.0
+  shared_preferences: ^2.1.1
+  path_provider: ^2.0.11
+  url_launcher: ^6.1.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
